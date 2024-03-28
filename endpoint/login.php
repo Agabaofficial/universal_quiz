@@ -9,31 +9,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':username', $username);
     $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-        $row = $stmt->fetch();
-        $stored_password = $row['password'];
-
-        if ($password === $stored_password) {
-            echo "
-            <script>
-                alert('Login Successfully!');
-                window.location.href = 'http://localhost/codetester/universal.html';
-            </script>
-            ";
-        } elseif ($user_exists) {
-            echo "
-            <script>
-                alert('Login Failed, Incorrect Password!');
-                window.location.href = 'http://localhost/index.php';
-            </script>
-            ";
-        } else {
-            echo "
-            <script>
-                alert('Login Failed, User Not Found! Please try signing in again.');
-                window.location.href = 'http://localhost/home';
-            </script>
-            ";
-        }
+    if ($password === $stored_password) {
+        echo "
+        <script>
+            alert('Login Successfully!');
+            window.location.href = 'http://localhost/codetester/universal.html';
+        </script>
+        "; 
+    } else {
+        echo "
+        <script>
+            alert('Login Failed, Incorrect Password!');
+            window.location.href = 'http://localhost/home.php';
+        </script>
+        ";
     }
+} else {
+    echo "
+        <script>
+            alert('Login Failed, User Not Found!');
+            window.location.href = 'http://localhost/home.php';
+        </script>
+        ";
+}
+}
+
 ?>
