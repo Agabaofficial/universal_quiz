@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Custom Search API </title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    position: relative;
+  }
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+  }
+  #searchInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+  #searchButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: hsl(226, 81%, 49%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #searchButton:hover {
+    background-color: #45a049;
+  }
+  .search-results {
+    margin-top: 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .search-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  .search-item img {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+  .search-item .info {
+    flex-grow: 1;
+  }
+  .search-item .title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .search-item .link {
+    color: #0066cc;
+    text-decoration: none;
+  }
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(0, 0, 0, 0.1);
+    font-size: 48px;
+    pointer-events: none; /* Ensure watermark doesn't interfere with clicks */
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Google Custom Search API</h1>
+  <input type="text" id="searchInput" placeholder="Enter your search query">
+  <button id="searchButton" onclick="search()">Search</button>
+  
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<div class="watermark">Universal Quiz Tester</div>
+
+<script>
+function search() {
+  const API_KEY = 'AIzaSyBzsAaqlCuR4YcgmmgAeqzuF52-4POnxDE';
+  const SEARCH_ENGINE_ID = 'f0ebfbd2c7eeb4b55';
+  const query = document.getElementById('searchInput').value.trim();
+
+  const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      displayResults(data);
+      showWatermark(); // Show watermark when search results are displayed
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+}
+
+function displayResults(data) {
+  const resultsContainer = document.getElementById('searchResults');
+  resultsContainer.innerHTML = '';
+
+  if (data.items) {
+    data.items.forEach(item => {
+      const searchItem = document.createElement('div');
+      searchItem.classList.add('search-item');
+
+      const favicon = document.createElement('img');
+      favicon.src = item.pagemap.cse_image ? item.pagemap.cse_image[0].src : 'favicon.png';
+      favicon.alt = 'Favicon';
+      
+      const info = document.createElement('div');
+      info.classList.add('info');
+
+      const title = document.createElement('div');
+      title.classList.add('title');
+      title.textContent = item.title;
+
+      const link = document.createElement('a');
+      link.classList.add('link');
+      link.href = item.link;
+      link.target = '_blank';
+      link.textContent = item.link;
+      
+      info.appendChild(title);
+      info.appendChild(link);
+      searchItem.appendChild(favicon);
+      searchItem.appendChild(info);
+      resultsContainer.appendChild(searchItem);
+    });
+  } else {
+    resultsContainer.textContent = 'No results found.';
+  }
+}
+
+function showWatermark() {
+  const watermark = document.querySelector('.watermark');
+  watermark.style.display = 'block';
+}
+</script>
+
+</body>
+</html>
